@@ -1,0 +1,76 @@
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * Copyright (C) 2015-2020 Bootlin - https://bootlin.com/
+ *
+ * Also available on
+ * SOLUTION_URL
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+/dts-v1/;
+
+/* For BeableBone Black, use instead:
+ * #include "am335x-boneblack.dts"
+ */
+#include "am335x-boneblack-wireless.dts"
+
+&am33xx_pinmux {
+	/* Pins 17 (SCL) and 18 (SDA) of connector P9 */
+        i2c1_pins: i2c1-pins {
+                pinctrl-single,pins = <
+			/* (A16) spi0_d1.i2c1_sda */
+                        AM33XX_PADCONF(AM335X_PIN_SPI0_D1, PIN_INPUT_PULLUP, MUX_MODE2)
+			/* (B16) spi0_cs0.i2c1_scl */
+                        AM33XX_PADCONF(AM335X_PIN_SPI0_CS0, PIN_INPUT_PULLUP, MUX_MODE2)
+                >;
+        };
+
+	/* Pins 21 (TX) and 22 (RX) of connector P9 */
+	uart2_pins: uart2-pins {
+		pinctrl-single,pins = <
+			/* (A17) spi0_sclk.uart2_rxd */
+			AM33XX_PADCONF(AM335X_PIN_SPI0_SCLK, PIN_INPUT_PULLUP, MUX_MODE1)
+			/* (B17) spi0_d0.uart2_txd */
+			AM33XX_PADCONF(AM335X_PIN_SPI0_D0, PIN_OUTPUT, MUX_MODE1)
+		>;
+	};
+
+	/* Pins 11 (RX) and 13 (TX) of connector P9 */
+	uart4_pins: uart4-pins {
+		pinctrl-single,pins = <
+			/* (T17) gpmc_wait0.uart4_rxd */
+			AM33XX_PADCONF(AM335X_PIN_GPMC_WAIT0, PIN_INPUT_PULLUP, MUX_MODE6)
+			/* (U17) gpmc_wpn.uart4_txd */
+			AM33XX_PADCONF(AM335X_PIN_GPMC_WPN, PIN_OUTPUT, MUX_MODE6)
+		>;
+	};
+};
+
+&i2c1 {
+        pinctrl-names = "default";
+        pinctrl-0 = <&i2c1_pins>;
+
+	status = "okay";
+	clock-frequency = <100000>;
+
+	nunchuk: joystick@52 {
+		compatible = "nintendo,nunchuk";
+		reg = <0x52>;
+	};
+};
+
+&uart2 {
+	compatible = "bootlin,serial";
+        status = "okay";
+        pinctrl-names = "default";
+        pinctrl-0 = <&uart2_pins>;
+};
+
+&uart4 {
+	compatible = "bootlin,serial";
+        status = "okay";
+        pinctrl-names = "default";
+        pinctrl-0 = <&uart4_pins>;
+};
